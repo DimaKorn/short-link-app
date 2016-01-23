@@ -6,13 +6,13 @@
         <th>Create date</th>
         <th>Visits' count</th>
     </thead>
-    <tbody >
+    <tbody ng-repeat="link in vm.links">
         <tr>
             <td>#</td>
-            <td>https://some</td>
-            <td>more</td>
-            <td>2015-12-11</td>
-            <td>3</td>
+            <td>{{link.originalLink}}</td>
+            <td>{{link.shortLink}}</td>
+            <td>{{link.createDate}}</td>
+            <td>{{link.visitCount}}</td>
         </tr>
     </tbody>
 </table>
