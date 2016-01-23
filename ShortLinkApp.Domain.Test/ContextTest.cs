@@ -27,7 +27,7 @@ namespace ShortLinkApp.Domain.Test
             var lr = new LinkRecord("https://google.kz");
             using (var rep = new LinkRepository())
             {
-                rep.Save(lr);
+                rep.CreateAndSave(lr);
 
             }
             Assert.That(lr.Id, Is.GreaterThan(0));

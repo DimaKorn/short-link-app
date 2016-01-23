@@ -13,11 +13,16 @@ namespace ShortLinkApp
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            
+            routes.MapRoute(name: "SingleRoute", url: "{shortLink}",
+                defaults: new { controller = "Home", action = "ServeShortLink" });
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index" ,id=UrlParameter.Optional}
+                
             );
+
         }
     }
 }

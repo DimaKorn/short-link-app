@@ -20,9 +20,17 @@
               controller: ["$scope", "$http", function ($scope, $http) {
                   console.log($scope);
                   this.links = [];
-                  for (var i = 0; i < 5; ++i) {
-                      this.links.push(new link(i));
-                  }
+                  var self = this;
+                  $http.get("/api/ShortLink").then(function (resp) {
+                      for(var i=0;i<resp.data.length;++i)
+                      {
+                          self.links.push(resp.data[i]);
+                      }
+                  }, function (resp) {
+                      console.log("Error response:");
+                      console.log(resp);
+
+                  });
               }]
           }
 

@@ -24,6 +24,14 @@
                     this.onSave = (function () {
                         console.log("link to save " + this.orginalLink);
                         this.shortLink = "http://some/2345";
+                        var self=this;
+                        $http.post("/api/ShortLink", { OriginalLink: self.originalLink })
+                            .then(function (response) {
+                                console.log(response.data);
+                                self.shortLink = response.data.ShortLink;
+                            },function (e) {
+                                console.log(arguments);
+                            })
                     }).bind(this);
                 }]
             };

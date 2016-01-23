@@ -35,10 +35,18 @@ namespace ShortLinkApp.Domain.Repository
 
       
 
-        public void Save(LinkRecord record)
+        public LinkRecord CreateAndSave(string url)
         {
+            var exisiting = _context.LinkRecords.FirstOrDefault(lr => lr.OriginalLink == url);
+            if (exisiting != null)
+                return exisiting;
+            var record = new LinkRecord(url)
+            {
+                CreateDate = DateTime.Now
+            };
             _context.LinkRecords.Add(record);
             _context.SaveChanges();
+            return record;
         }
 
         public void SaveAllChanges()

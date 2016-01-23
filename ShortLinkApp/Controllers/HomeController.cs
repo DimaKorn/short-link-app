@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShortLinkApp.Domain.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +9,39 @@ namespace ShortLinkApp.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string shortLink)
         {
-            ViewBag.Title = "Home Page";
+            if (string.IsNullOrEmpty(shortLink))
+            {
+                ViewBag.Title = "Home Page";
 
-            return View();
+                return View();
+            }
+            else
+            {
+                return View();
+            }
         }
+
+        public ActionResult ServeShortLink(string shortLink)
+        {
+            using (var rep = new LinkRepository())
+            {
+                var link = rep.RetrieveByShortLink(shortLink);
+                if (link == null)
+                {
+                    return HttpNotFound();
+                }
+                else
+                {
+                    link.VisitsCount += 1;
+                    rep.SaveAllChanges();
+                    return Redirect(link.OriginalLink);
+                }
+            }
+        }
+
+
+       
     }
 }

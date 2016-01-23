@@ -9,10 +9,10 @@
     <tbody ng-repeat="link in vm.links">
         <tr>
             <td>#</td>
-            <td>{{link.originalLink}}</td>
-            <td>{{link.shortLink}}</td>
-            <td>{{link.createDate}}</td>
-            <td>{{link.visitCount}}</td>
+            <td><a target="_blank" href="{{link.OriginalLink}}">{{link.OriginalLink}}</a></td>
+            <td><a target="_blank" href="{{link.ShortLink}}">{{link.ShortLink}}</a></td>
+            <td>{{link.CreationDate}}</td>
+            <td>{{link.VisitsCount}}</td>
         </tr>
     </tbody>
 </table>
