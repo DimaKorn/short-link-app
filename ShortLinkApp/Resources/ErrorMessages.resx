@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="OriginalLinkIsNotAccessible" xml:space="preserve">
+    <value>Ссылка не доступна или URL недопустимый.  Укажите абсолютный URL.</value>
+  </data>
   <data name="OriginalLinkRequired" xml:space="preserve">
     <value>URL-адрес не введен</value>
   </data>

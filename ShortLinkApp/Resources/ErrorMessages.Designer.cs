@@ -61,6 +61,15 @@ namespace ShortLinkApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ссылка не доступна или URL недопустимый.  Укажите абсолютный URL..
+        /// </summary>
+        internal static string OriginalLinkIsNotAccessible {
+            get {
+                return ResourceManager.GetString("OriginalLinkIsNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to URL-адрес не введен.
         /// </summary>
         internal static string OriginalLinkRequired {

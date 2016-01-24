@@ -14,6 +14,10 @@ namespace ShortLinkApp.Domain.Repository
     public class LinkRepository : ILinkRepository
     {
         private LinkDbContext _context;
+        public LinkRepository(string connectionString)
+        {
+            this._context = new LinkDbContext(connectionString);
+        }
         public LinkRepository()
         {
             this._context = new LinkDbContext();

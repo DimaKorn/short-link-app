@@ -9,6 +9,8 @@ using ShortLinkApp.Domain.Model;
 using ShortLinkApp.Domain.Repository;
 using ShortLinkApp.Domain.Common;
 using System.Transactions;
+using ShortLinkApp.Domain.Services;
+
 namespace ShortLinkApp.Domain.Test
 {
     [TestFixture]
@@ -64,6 +66,30 @@ namespace ShortLinkApp.Domain.Test
                 Assert.That(readen.Id, Is.EqualTo(created.Id));
                 Assert.That(readen.OriginalLink, Is.EqualTo(created.OriginalLink));
             }
+        }
+
+        [Test]
+        public  async Task TestUrlCheckingGoodPath()
+        {
+            var service = new UrlCheckingService();
+            var result =await service.IsAccessibleUrl("http://google.kz");
+            Assert.IsTrue(result);
+
+        }
+        [Test]
+        public async Task TestUrlCheckingSadNetworkPath()
+        {
+            var service = new UrlCheckingService();
+            var result = await service.IsAccessibleUrl("http://xz.egg/dacom");
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task TestUrlCheckingSadFormatPath()
+        {
+            var service = new UrlCheckingService();
+            var result = await service.IsAccessibleUrl("http:aaa");
+            Assert.IsFalse(result);
         }
     }
 }

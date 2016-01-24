@@ -18,5 +18,6 @@ namespace ShortLinkApp.Domain.Common
     public interface ILinkRepositoryFactory
     {
         ILinkRepository CreateInstance();
+        ILinkRepository CreateInstance(string connectionString);
     }
 }

@@ -1,4 +1,6 @@
-﻿using ShortLinkApp.Domain.Repository;
+﻿using Microsoft.Practices.Unity;
+using ShortLinkApp.Domain.Common;
+using ShortLinkApp.Domain.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,8 @@ namespace ShortLinkApp.Controllers
 {
     public class HomeController : Controller
     {
+        [Dependency]
+        public ILinkRepositoryFactory RepositoryFactory { get; set; }
         public ActionResult Index()
         {
           
@@ -19,7 +23,7 @@ namespace ShortLinkApp.Controllers
 
         public ActionResult ServeShortLink(string shortLink)
         {
-            using (var rep = new LinkRepository())
+            using (var rep = RepositoryFactory.CreateInstance())
             {
                 var result = rep.RetrieveByShortLink(shortLink);
                 if (!result.IsSuccess || result.Data==null)

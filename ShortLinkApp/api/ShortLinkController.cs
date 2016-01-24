@@ -1,21 +1,29 @@
-﻿using ShortLinkApp.Domain.Model;
+﻿using Microsoft.Practices.Unity;
+using ShortLinkApp.Domain.Common;
+using ShortLinkApp.Domain.Model;
 using ShortLinkApp.Domain.Repository;
+using ShortLinkApp.Resources;
 using ShortLinkApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ShortLinkApp.api
 {
     public class ShortLinkController : ApiController
     {
+        [Dependency]
+        public ILinkRepositoryFactory RepositoryFactory { get; set; }
+        [Dependency]
+        public IUrlCheckingService UrlCheckingService { get; set; }
         // GET: api/ShortLink
         public IHttpActionResult Get()
         {
-            using (var rep = new LinkRepository())
+            using (var rep = RepositoryFactory.CreateInstance())
             {
                 var response = rep.RetrieveAll(100);
                 if (response.IsSuccess)
@@ -29,20 +37,20 @@ namespace ShortLinkApp.api
 
                 }
             }
-        }
-
-      
+        }     
 
         // POST: api/ShortLink
-        public IHttpActionResult Post(LinkRequest request)
+        public async Task<IHttpActionResult> Post(LinkRequest request)
         {
             if(!ModelState.IsValid)
             {
                 return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.BadRequest, new HttpError(ModelState, false)));
-
-
             }
-            using (var rep = new LinkRepository())
+            if(! await UrlCheckingService.IsAccessibleUrl(request.OriginalLink))
+            {
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.BadRequest, new HttpError(ErrorMessages.OriginalLinkIsNotAccessible)));
+            }
+            using (var rep = RepositoryFactory.CreateInstance())
             {
                 var response = rep.CreateAndSave(request.OriginalLink);
                 return

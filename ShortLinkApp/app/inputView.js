@@ -12,8 +12,7 @@
                 bindToController: true,
                 controllerAs:"vm",
                 controller: ["$scope","$http", function ($scope, $http) {
-                    console.log($scope);
-                    
+                                      
                     this.shortLink = null;
                     this.onSave = (function () {
                                               
