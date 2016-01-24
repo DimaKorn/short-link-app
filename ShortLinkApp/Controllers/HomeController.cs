@@ -9,31 +9,26 @@ namespace ShortLinkApp.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index(string shortLink)
+        public ActionResult Index()
         {
-            if (string.IsNullOrEmpty(shortLink))
-            {
+          
                 ViewBag.Title = "Home Page";
-
                 return View();
-            }
-            else
-            {
-                return View();
-            }
+          
         }
 
         public ActionResult ServeShortLink(string shortLink)
         {
             using (var rep = new LinkRepository())
             {
-                var link = rep.RetrieveByShortLink(shortLink);
-                if (link == null)
+                var result = rep.RetrieveByShortLink(shortLink);
+                if (!result.IsSuccess || result.Data==null)
                 {
                     return HttpNotFound();
                 }
                 else
                 {
+                    var link = result.Data;
                     link.VisitsCount += 1;
                     rep.SaveAllChanges();
                     return Redirect(link.OriginalLink);

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ShortLinkApp.Domain.Model;
 using ShortLinkApp.Domain.Utility;
+using System.Data.Entity.Core;
+using ShortLinkApp.Domain.Resources;
 
 namespace ShortLinkApp.Domain.Repository
 {
@@ -16,37 +18,63 @@ namespace ShortLinkApp.Domain.Repository
         {
             this._context = new LinkDbContext();
         }
+        protected RepositoryResult<T> InvokeForResult<T>(Func<T> func)
+        {
+            try
+            {
+                return new RepositoryResult<T>(func());
+            }
+            catch(ProviderIncompatibleException ex)
+            {
+                return new RepositoryResult<T>(default(T), false, ErrorResources.DbProviderException+Environment.NewLine+ex.Message);
 
+            }
+            catch(EntityException ex)
+            {
+                return new RepositoryResult<T>(default(T), false, ErrorResources.DbGeneralException+Environment.NewLine+ex.Message);
+            }
+             catch(Exception ex){
+                return new RepositoryResult<T>(default(T), false, ErrorResources.SystemException+Environment.NewLine+ex.Message);
+            }
+
+
+
+        }
         public void Dispose()
         {
             this._context.Dispose();
         }
 
-        public LinkRecord[] RetrieveAll(int limit)
+        public RepositoryResult<LinkRecord[]> RetrieveAll(int limit=100)
         {
-            return _context.LinkRecords.OrderBy(lr => lr.Id).Take(limit).ToArray(); 
+            return this.InvokeForResult(()=>
+            _context.LinkRecords.OrderBy(lr => lr.Id).Take(limit).ToArray()); 
         }
 
-        public LinkRecord RetrieveByShortLink(string shortLink)
+        public RepositoryResult<LinkRecord> RetrieveByShortLink(string shortLink)
         {
             var id = shortLink.FromBase62() - LinkRecord.Offset;
-            return _context.LinkRecords.SingleOrDefault(lr => lr.Id == id);
+            return this.InvokeForResult(() =>
+            _context.LinkRecords.SingleOrDefault(lr => lr.Id == id));
         }
 
       
 
-        public LinkRecord CreateAndSave(string url)
+        public RepositoryResult<LinkRecord> CreateAndSave(string url)
         {
-            var exisiting = _context.LinkRecords.FirstOrDefault(lr => lr.OriginalLink == url);
-            if (exisiting != null)
-                return exisiting;
-            var record = new LinkRecord(url)
+            return InvokeForResult(() =>
             {
-                CreateDate = DateTime.Now
-            };
-            _context.LinkRecords.Add(record);
-            _context.SaveChanges();
-            return record;
+                var exisiting = _context.LinkRecords.FirstOrDefault(lr => lr.OriginalLink == url);
+                if (exisiting != null)
+                    return exisiting;
+                var record = new LinkRecord(url)
+                {
+                    CreateDate = DateTime.Now
+                };
+                _context.LinkRecords.Add(record);
+                _context.SaveChanges();
+                return record;
+            });
         }
 
         public void SaveAllChanges()

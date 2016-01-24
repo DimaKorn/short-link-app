@@ -17,32 +17,34 @@
                     this.shortLink = null;
                     this.onSave = (function () {
                                               
-                        var self=this;
+                        var self = this;
+                        self.isRunning = true;
                         this.errorMessage=null;
                         $http.post("/api/ShortLink", { OriginalLink: self.originalLink })
                             .then(function (response) {
-                                
+
                                 self.shortLink = response.data.ShortLink;
-                                if($scope.inputForm)
-                                {
+                                if ($scope.inputForm) {
                                     $scope.inputForm.$setPristine();
                                 }
-                            },function (e) {
+                                self.isRunning = false;
+
+                            }, function (e) {
                                 console.log(arguments);
                                 var message = "";
-                                if (e.data)
-                                {
+                                if (e.data) {
                                     if (e.data.ModelState) {
                                         for (var p in e.data.ModelState) {
                                             message += e.data.ModelState[p].join(";");
                                         }
                                     }
                                     else
-                                        message = e.data.Message;                                 
+                                        message = e.data.Message;
 
                                 }
-                                self.errorMessage =message || (e.status+" "+e.statusText);
-                            })
+                                self.errorMessage = message || (e.status + " " + e.statusText);
+                                self.isRunning = false;
+                            });
                     }).bind(this);
                 }]
             };

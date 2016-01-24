@@ -13,12 +13,21 @@ namespace ShortLinkApp.api
     public class ShortLinkController : ApiController
     {
         // GET: api/ShortLink
-        public IEnumerable<LinkViewModel> Get()
+        public IHttpActionResult Get()
         {
             using (var rep = new LinkRepository())
             {
-                var domain = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-                return rep.RetrieveAll(100).Select(l => new LinkViewModel(l,domain)) ;
+                var response = rep.RetrieveAll(100);
+                if (response.IsSuccess)
+                {
+                    var domain = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+                    return Ok(response.Data.Select(l => new LinkViewModel(l, domain)));
+                }
+                else
+                {
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, new HttpError(response.Message)));
+
+                }
             }
         }
 
@@ -35,8 +44,12 @@ namespace ShortLinkApp.api
             }
             using (var rep = new LinkRepository())
             {
-                var lr = rep.CreateAndSave(request.OriginalLink);
-                return Ok(new LinkViewModel(lr, Request.RequestUri.GetLeftPart(UriPartial.Authority)));
+                var response = rep.CreateAndSave(request.OriginalLink);
+                return
+                    response.IsSuccess ?
+                    Ok(new LinkViewModel(response.Data, Request.RequestUri.GetLeftPart(UriPartial.Authority))) as IHttpActionResult
+                    : ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, new HttpError( response.Message)));
+
                 //return new LinkViewModel(lr,Request.RequestUri.GetLeftPart(UriPartial.Authority));
             }
         }

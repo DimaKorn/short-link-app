@@ -9,10 +9,10 @@ namespace ShortLinkApp.Domain.Common
 {
     public interface ILinkRepository:IDisposable
     {
-        LinkRecord CreateAndSave(string url);
+        RepositoryResult<LinkRecord> CreateAndSave(string url);
         void SaveAllChanges();
-        LinkRecord RetrieveByShortLink(string shortLink);
-        LinkRecord[] RetrieveAll(int limit);
+        RepositoryResult<LinkRecord> RetrieveByShortLink(string shortLink);
+        RepositoryResult<LinkRecord[]> RetrieveAll(int limit);
     }
 
     public interface ILinkRepositoryFactory

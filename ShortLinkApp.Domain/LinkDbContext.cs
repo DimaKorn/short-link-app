@@ -10,11 +10,17 @@ namespace ShortLinkApp.Domain
     {
         static LinkDbContext()
         {
-            Database.SetInitializer<LinkDbContext>(null);
+            Database.SetInitializer<LinkDbContext>(new CreateDatabaseIfNotExists<LinkDbContext>());
+        }
+
+        public LinkDbContext(string connectionString):base(connectionString)
+        {
+
         }
         public LinkDbContext()
             : base("name=LinkDbConnection")
         {
+
         }
 
         public virtual DbSet<LinkRecord> LinkRecords { get; set; }

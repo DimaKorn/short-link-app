@@ -19,10 +19,10 @@
               controllerAs: "vm",
               controller: ["$scope", "$http", function ($scope, $http) {
                   console.log($scope);
-                  this.links = [];
+                  this.links =null;
                   var self = this;
                   $http.get("/api/ShortLink").then(function (resp) {
-                      
+                      vm.links = [];
                       for(var i=0;i<resp.data.length;++i)
                       {
                           self.links.push(resp.data[i]);

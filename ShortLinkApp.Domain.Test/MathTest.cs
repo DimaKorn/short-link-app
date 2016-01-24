@@ -25,5 +25,12 @@ namespace ShortLinkApp.Domain.Test
             var result = source.FromBase62();
             Assert.That(result, Is.EqualTo(999));
         }
+        [Test]
+        public void TestInvalidSymbols()
+        {
+            var source = "!df";
+            var result = source.FromBase62();
+            Assert.That(result, Is.EqualTo(-1));
+        }
     }
 }

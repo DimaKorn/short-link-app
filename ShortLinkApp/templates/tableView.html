@@ -25,7 +25,7 @@
             </tr>
         </tbody>
     </table>
-    <div ng-show="!vm.links || vm.links.length==0" class="row">
+    <div ng-show="vm.links && vm.links.length==0 && !vm.errorMessage" class="row">
         <div class="alert alert-info" role="alert">No links in database yet!!!</div>
     </div>
 

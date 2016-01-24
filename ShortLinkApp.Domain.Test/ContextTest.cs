@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using ShortLinkApp.Domain;
 using ShortLinkApp.Domain.Model;
 using ShortLinkApp.Domain.Repository;
-
+using ShortLinkApp.Domain.Common;
+using System.Transactions;
 namespace ShortLinkApp.Domain.Test
 {
     [TestFixture]
@@ -15,30 +16,53 @@ namespace ShortLinkApp.Domain.Test
     {
 
         [Test]
-        public void TestContext()
+        public void TestMappings()
         {
             var context = new LinkDbContext();
             var items = context.LinkRecords.ToList();
             Assert.IsNotNull(items);
         }
+
         [Test]
-        public void Saving()
+        public void TestLinkRecordSaving()
         {
-            var lr = new LinkRecord("https://google.kz");
-            using (var rep = new LinkRepository())
+
+            RepositoryResult<LinkRecord> response=default(RepositoryResult<LinkRecord>);
+            var now = DateTime.Now;
+            using (var scope = new TransactionScope())
             {
-                rep.CreateAndSave(lr);
-
+                using (var rep = new LinkRepository())
+                {
+                    var url = string.Format("https://google.kz?id={0}", (new Random()).Next(int.MaxValue));                       
+                    response = rep.CreateAndSave(url);
+                }
             }
-            Assert.That(lr.Id, Is.GreaterThan(0));
-
+            Assert.IsTrue(response.IsSuccess);
+            Assert.That(response.Data.Id, Is.GreaterThan(0));
+            Assert.That(response.Data.CreateDate, Is.GreaterThan(now));
         }
         [Test]
-        public void Getting()
+        public void TestRetrieveByShortLink()
         {
-            using (var rep = new LinkRepository())
+            using (var scope = new TransactionScope())
             {
-                var all = rep.RetrieveAll(500);
+                var now = DateTime.Now;
+                LinkRecord created = null;
+                using (var createRep = new LinkRepository())
+                {
+                    var url = string.Format("http://google.kz?id={0}", (new Random()).Next(int.MaxValue));
+                    var response = createRep.CreateAndSave(url);
+                    created = response.Data;
+                }
+                LinkRecord readen = null;
+                using(var readRep = new LinkRepository())
+                {
+                    readen = readRep.RetrieveByShortLink(created.ShortLink).Data;
+
+                }
+
+                Assert.That(readen.Id, Is.EqualTo(created.Id));
+                Assert.That(readen.OriginalLink, Is.EqualTo(created.OriginalLink));
             }
         }
     }

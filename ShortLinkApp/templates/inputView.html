@@ -10,7 +10,7 @@
 
 
 
-    <form name="inputForm" class="form-inline">
+    <form ng-disabled="!!vm.isRunning" name="inputForm" class="form-inline">
         <div class="form-group">
             <label for="originalLink">Original link</label>
             <input class="form-control" id="originalLink" type="url" required ng-model="vm.originalLink" placeholder="Enter orginal link" />
