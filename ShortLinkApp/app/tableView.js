@@ -22,11 +22,13 @@
                   this.links = [];
                   var self = this;
                   $http.get("/api/ShortLink").then(function (resp) {
+                      
                       for(var i=0;i<resp.data.length;++i)
                       {
                           self.links.push(resp.data[i]);
                       }
                   }, function (resp) {
+                      self.errorMessage = (resp.data && resp.data.Message) ? resp.data.Message : (resp.status + " " + resp.statusText);
                       console.log("Error response:");
                       console.log(resp);
 

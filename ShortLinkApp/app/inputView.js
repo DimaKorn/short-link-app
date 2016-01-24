@@ -13,24 +13,35 @@
                 controllerAs:"vm",
                 controller: ["$scope","$http", function ($scope, $http) {
                     console.log($scope);
-                    this.originalLink = "http://www.google.kz";
-                    this.shortLink = null;
-                    this.onUserInput = (function () {
-                        if (this.shortLink) {
-                            this.shortLink = null;
-                        }
-                    }).bind(this);
                     
+                    this.shortLink = null;
                     this.onSave = (function () {
-                        console.log("link to save " + this.orginalLink);
-                        this.shortLink = "http://some/2345";
+                                              
                         var self=this;
+                        this.errorMessage=null;
                         $http.post("/api/ShortLink", { OriginalLink: self.originalLink })
                             .then(function (response) {
-                                console.log(response.data);
+                                
                                 self.shortLink = response.data.ShortLink;
+                                if($scope.inputForm)
+                                {
+                                    $scope.inputForm.$setPristine();
+                                }
                             },function (e) {
                                 console.log(arguments);
+                                var message = "";
+                                if (e.data)
+                                {
+                                    if (e.data.ModelState) {
+                                        for (var p in e.data.ModelState) {
+                                            message += e.data.ModelState[p].join(";");
+                                        }
+                                    }
+                                    else
+                                        message = e.data.Message;                                 
+
+                                }
+                                self.errorMessage =message || (e.status+" "+e.statusText);
                             })
                     }).bind(this);
                 }]

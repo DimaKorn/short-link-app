@@ -1,18 +1,32 @@
-﻿<table class="table table-striped">
-    <thead>
-        <th>#</th>
+﻿
+<div  class="container p-t-15" ng-cloak>
+
+    <div ng-show="!!vm.errorMessage" class="row">
+        <div class="alert alert-danger">
+            {{vm.errorMessage}}
+        </div>
+    </div>
+
+    <table ng-show="vm.links && vm.links.length>0" class="table table-striped">
+        <thead>
+      
         <th>Orginal link</th>
         <th>Short link</th>
         <th>Create date</th>
         <th>Visits' count</th>
-    </thead>
-    <tbody ng-repeat="link in vm.links">
-        <tr>
-            <td>#</td>
-            <td><a target="_blank" href="{{link.OriginalLink}}">{{link.OriginalLink}}</a></td>
-            <td><a target="_blank" href="{{link.ShortLink}}">{{link.ShortLink}}</a></td>
-            <td>{{link.CreationDate}}</td>
-            <td>{{link.VisitsCount}}</td>
-        </tr>
-    </tbody>
-</table>
+        </thead>
+        <tbody ng-repeat="link in vm.links">
+            <tr>
+                
+                <td><a target="_blank" href="{{link.OriginalLink}}">{{link.OriginalLink}}</a></td>
+                <td><a target="_blank" href="{{link.ShortLink}}">{{link.ShortLink}}</a></td>
+                <td>{{link.CreationDate}}</td>
+                <td>{{link.VisitsCount}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div ng-show="!vm.links || vm.links.length==0" class="row">
+        <div class="alert alert-info" role="alert">No links in database yet!!!</div>
+    </div>
+
+</div>

@@ -18,7 +18,7 @@ namespace ShortLinkApp.ViewModels
            
             this.OriginalLink = lr.OriginalLink;
             this.ShortLink =domainAuthority+"/"+ lr.ShortLink;
-            this.CreationDate = lr.CreateDate.ToString();
+            this.CreationDate = lr.CreateDate.ToString("yyyy-MM-dd HH:mm");
             this.VisitsCount = lr.VisitsCount;
         }
 

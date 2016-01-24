@@ -25,17 +25,19 @@ namespace ShortLinkApp.api
       
 
         // POST: api/ShortLink
-        public LinkViewModel Post(LinkRequest request)
+        public IHttpActionResult Post(LinkRequest request)
         {
             if(!ModelState.IsValid)
             {
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.BadRequest, new HttpError(ModelState, false)));
+
+
             }
             using (var rep = new LinkRepository())
             {
                 var lr = rep.CreateAndSave(request.OriginalLink);
-                
-                return new LinkViewModel(lr,Request.RequestUri.GetLeftPart(UriPartial.Authority));
+                return Ok(new LinkViewModel(lr, Request.RequestUri.GetLeftPart(UriPartial.Authority)));
+                //return new LinkViewModel(lr,Request.RequestUri.GetLeftPart(UriPartial.Authority));
             }
         }
 

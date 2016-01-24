@@ -1,16 +1,29 @@
 ﻿
-
-<form  name="inputForm" class="form-inline">
-    <div class="form-group">
-        <label for="originalLink">Original link</label>
-        <input class="form-control"  id="originalLink" type="url" required ng-model="vm.originalLink" ng-keypress="vm.onUserInput()" placeholder="Enter orginal link" />
+<div class="container" ng-cloak>
+ 
+    <div ng-show="!!vm.errorMessage" class="row">
+        <div class="alert alert-danger">
+            {{vm.errorMessage}}
+        </div>
     </div>
-    <button ng-disabled="inputForm.$invalid" type="submit" class="btn btn-default" ng-click="vm.onSave()">Submit</button>
-</form>
 
-<div ng-show="!!vm.shortLink" class="panel panel-default">
-    <div class="panel-heading">Formed short link:</div>
-    <div class="panel-body">
-        <a target="_blank" href="{{vm.shortLink}}">{{vm.shortLink}}</a>
+
+
+
+    <form name="inputForm" class="form-inline">
+        <div class="form-group">
+            <label for="originalLink">Original link</label>
+            <input class="form-control" id="originalLink" type="url" required ng-model="vm.originalLink" placeholder="Enter orginal link" />
+        </div>
+        <button ng-disabled="inputForm.$invalid" type="submit" class="btn btn-default" ng-click="vm.onSave()">Submit</button>
+    </form>
+
+    <div  class="row p-t-15">
+        <div ng-show="!!vm.shortLink && inputForm.$pristine" class="panel panel-default">
+            <div class="panel-heading">Formed short link:</div>
+            <div class="panel-body">
+                <a target="_blank" href="{{vm.shortLink}}">{{vm.shortLink}}</a>
+            </div>
+        </div>
     </div>
 </div>
