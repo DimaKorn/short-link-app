@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity;
 using ShortLinkApp.Domain.Common;
 using ShortLinkApp.Domain.Repository;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Transactions;
 
 namespace ShortLinkApp.Controllers
 {
@@ -25,17 +26,22 @@ namespace ShortLinkApp.Controllers
         {
             using (var rep = RepositoryFactory.CreateInstance())
             {
-                var result = rep.RetrieveByShortLink(shortLink);
-                if (!result.IsSuccess || result.Data==null)
+                using (var scope = new TransactionScope())
                 {
-                    return HttpNotFound();
-                }
-                else
-                {
-                    var link = result.Data;
-                    link.VisitsCount += 1;
-                    rep.SaveAllChanges();
-                    return Redirect(link.OriginalLink);
+                    var result = rep.RetrieveByShortLink(shortLink);
+                    if (!result.IsSuccess || result.Data == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    else
+                    {
+                        var link = result.Data;
+                        link.VisitsCount += 1;
+                        rep.SaveAllChanges();
+                        scope.Complete();
+                        return Redirect(link.OriginalLink);
+                    }
+                  
                 }
             }
         }
